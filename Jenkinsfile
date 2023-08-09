@@ -5,7 +5,7 @@ node{
    stage('maven-buildstage'){
 
       def mvnHome =  tool name: 'maven3', type: 'maven'   
-      sh "${mvnHome}/bin/mvn clean package"
+      sh "${mvnHome}/bin/mvn  package"
 	  sh 'mv target/myweb*.war target/newapp.war'
    }
     stage('SonarQube Analysis') {
@@ -15,17 +15,17 @@ node{
 	        }
 	    }
    stage('Build Docker Image'){
-   sh 'docker build -t saidamo/myweb:0.0.2 .'
+   sh 'docker build -t dhiv123/myweb:0.0.2 .'
    }
    stage('Docker Image Push'){
    withCredentials([string(credentialsId: 'dockerPass', variable: 'dockerPassword')]) {
-   sh "docker login -u saidamo -p ${dockerPassword}"
+   sh "docker login -u dhiv123 -p ${dockerPassword}"
     }
-   sh 'docker push saidamo/myweb:0.0.2'
+   sh 'docker push dhiv123/myweb:0.0.2'
    }
   stage('Nexus Image Push'){
    sh "docker login -u admin -p admin123 13.233.160.223:8083"
-   sh "docker tag saidamo/myweb:0.0.2 13.233.160.223:8083/damo:1.0.0"
+   sh "docker tag dhiv123/myweb:0.0.2 13.233.160.223:8083/damo:1.0.0"
    sh 'docker push 13.233.160.223:8083/damo:1.0.0'
    }
 
